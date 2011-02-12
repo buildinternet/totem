@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Totem Ticker</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.totemticker.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('#vertical-ticker').totemticker({
+				row_height	:	'100px',
+				next		:	'#ticker-next',
+				previous	:	'#ticker-previous',
+				stop		:	'#stop',
+				start		:	'#start',
+			});
+		});
+	</script>
+</head>
+<body>
+	
+	<h1>Totem Ticker</h1>
+	<p>Vertical scrolling ticker plugin for jQuery.</p>
+	
+	<div id="wrapper">
+	
+		<ul id="vertical-ticker">
+			<li>Slide 1</li>
+			<li>Slide 2</li>
+			<li>Slide 3</li>
+			<li>Slide 4</li>
+			<li>Slide 5</li>
+			<li>Slide 6</li>
+			<li>Slide 7</li>
+			<li>Slide 8</li>
+		</ul>
+		
+		<p><a href="#" id="ticker-previous">Previous</a> / <a href="#" id="ticker-next">Next</a> / <a id="stop" href="#">Stop</a> / <a id="start" href="#">Start</a></p>
+		
+	</div>
+</body>	
+</html>
