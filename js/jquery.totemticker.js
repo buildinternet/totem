@@ -48,11 +48,12 @@
 			
 	    	base.ticker = setInterval(function() {
 	    	
-	    	base.$el.find('li:first').animate({
+	    		base.$el.find('li:first').animate({
 	            	marginTop: '-' + base.options.row_height,
 	            }, base.options.speed, function() {
 	                $(this).detach().css('marginTop', '0').appendTo(base.$el);
 	            });
+	            
 	    	}, base.options.interval);
 	    }
 	    
@@ -130,6 +131,21 @@
 			        return false;
 				});
 			}
+			
+			//Stop on mouse hover
+			if (typeof(base.options.stopmouse) != "undefined" && base.options.stopmouse === true) {
+				base.$el.mouseenter(function(){
+					base.stop_interval();
+				}).mouseleave(function(){
+					base.start_interval();
+				});
+			}
+			
+			/*
+				TO DO List
+				----------------
+				Add a continuous scrolling mode
+			*/
 			
 		}
 		
