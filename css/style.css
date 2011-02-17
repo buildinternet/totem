@@ -4,29 +4,69 @@
 	Winter 2011
 */
 
+
+*{margin:0; padding:0;}
+
 body{
 	font-family:Lucida Grande, Helvetica, Arial, sans-serif;
+	background: url('../images/demo-bg.jpg') center 105px no-repeat #1a110a;
+	-webkit-font-smoothing:antialiased;
 }
+
+h1.logo{
+	overflow:hidden; 
+	text-indent:-9999em; 
+	width:230px; 
+	height:70px;
+	margin:0 auto 15px auto;
+	background: url('../images/totem-logo.png') top left no-repeat;
+}
+
+/* Top Banner */
+#banner .clear{ height:0px; width:100%; overflow:hidden; visibility: hidden; display:block; }
+#banner{ z-index:100; background: #1a1a1a; padding:10px 0; width:100%; display:block; }
+	#banner.transparent{ background-color:transparent; }
+	#banner.above{ position:absolute; top:0; left:0; }
+#banner .logo-zone{ height:auto; clear:left; float:left;overflow:hidden;}
+			#banner h1#logo-link{height:57px; width:160px; margin:24px 12px; background: url('../images/build-internet-logo-shadow.png') no-repeat top left;}
+				#banner h1#logo-link a{text-indent:-9999px; display:block; height:100%; width:100%; text-decoration:none;}
 
 #wrapper{
+	padding:30px;
 	width:300px;
+	margin:0 auto;
 }
 
-	#wrapper p{
-		text-align:center;
-	}
+	p{color:#fff; padding:10px 0; text-align:center;}
+		.nav{}
+	
+	#wrapper a, #footer a{color:#e8914c; text-decoration:none; border-bottom:1px dotted #e8914c;}
+		#wrapper a:hover, #footer a:hover{color:#eab209; border-bottom:1px dotted #eab209;}
+
+
+#footer{margin-top:20px; text-transform:uppercase; font-size:11px; letter-spacing:1px;}
+	#footer p{color:rgba(255,255,255,.5);}
+/*
+
+	This is the only semi-important stuff for plugin installation
+	It's just an example, so customize away!
+*/
 
 #vertical-ticker{
 	height:400px;
-	width:300px;
 	overflow:hidden;
 	margin:0; padding:0;
+	-webkit-box-shadow:0 1px 3px rgba(0,0,0, .4);
 }
 
 	#vertical-ticker li{
-		padding:41px 20px;
+		padding:35px 20px;
 		display:block;
 		background:#efefef;
+		color:#333;
 		border-bottom:1px solid #ddd;
 		text-align:center;
+		font-size:25px;
+		font-weight:bold;
+		font-family: Helvetica Neue, times, serif;
 	}

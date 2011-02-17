@@ -133,7 +133,7 @@
 			}
 			
 			//Stop on mouse hover
-			if (typeof(base.options.stopmouse) != "undefined" && base.options.stopmouse === true) {
+			if (typeof(base.options.mousestop) != "undefined" && base.options.mousestop === true) {
 				base.$el.mouseenter(function(){
 					base.stop_interval();
 				}).mouseleave(function(){
