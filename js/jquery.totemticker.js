@@ -46,15 +46,28 @@
 			//Clear out any existing interval
 			clearInterval(base.ticker);
 			
-	    	base.ticker = setInterval(function() {
-	    	
-	    		base.$el.find('li:first').animate({
-	            	marginTop: '-' + base.options.row_height,
-	            }, base.options.speed, function() {
-	                $(this).detach().css('marginTop', '0').appendTo(base.$el);
-	            });
-	            
-	    	}, base.options.interval);
+			if (base.options.direction == 'up') {
+				//If the direction has been set to up
+				base.ticker = setInterval(function() {
+					base.$el.find('li:last').detach().prependTo(base.$el).css('marginTop', '-' + base.options.row_height);
+					base.$el.find('li:first').animate({
+				        marginTop: '0px',
+				    }, base.options.speed, function () {
+				        //Callback functions go here
+				    });
+				}, base.options.interval);
+			}else{
+				//Otherwise, run the default of down
+		    	base.ticker = setInterval(function() {
+		    	
+		    		base.$el.find('li:first').animate({
+		            	marginTop: '-' + base.options.row_height,
+		            }, base.options.speed, function() {
+		                $(this).detach().css('marginTop', '0').appendTo(base.$el);
+		            });
+		            
+		    	}, base.options.interval);
+	    	}
 	    }
 	    
 	    base.reset_interval = function(){
@@ -169,6 +182,8 @@
   		speed		:	800,		/* Speed of transition animation in milliseconds */
   		interval	:	4000,		/* Time between change in milliseconds */
 		max_items	: 	null, 		/* Integer for how many items to display at once. Resizes height accordingly (OPTIONAL) */
+		mousestop	:	false,		/* If set to true, the ticker will stop on mouseover */
+		direction	:	'down',		/* Direction that list will scroll */		
   };
   
   $.fn.totemticker = function( options ){
