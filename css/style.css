@@ -57,6 +57,7 @@ h1.logo{
 	overflow:hidden;
 	margin:0; padding:0;
 	-webkit-box-shadow:0 1px 3px rgba(0,0,0, .4);
+	list-style:none;
 }
 
 	#vertical-ticker li{
