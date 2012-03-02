@@ -28,4 +28,7 @@ The following options are available via the plugin array. Defaults are listed be
     max_items	: 	null, 		/* Integer for how many items to display at once. Resizes height accordingly (OPTIONAL) */
     stopmouse	:	false,		/* If set to true, the ticker will stop while mouse is hovered over it */
 
-** More documentation to follow **
+## Contact
+
+- http://twitter.com/zachdunn
+- zach@onemightyroar.com
