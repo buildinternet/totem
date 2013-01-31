@@ -65,6 +65,7 @@ h1.logo{
 		display:block;
 		background:#efefef;
 		color:#333;
+		overflow:hidden;
 		border-bottom:1px solid #ddd;
 		text-align:center;
 		font-size:25px;
