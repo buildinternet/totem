@@ -1,5 +1,5 @@
 /*
-	Totem Ticker Plugin
+	Totem Ticker Plugin v2.1
 	Copyright (c) 2011 Zach Dunn / www.buildinternet.com
 	Released under MIT License
 	--------------------------
@@ -40,7 +40,7 @@
 			base.setup_scroll();
 			
 			//Start the ticker
-			base.start_interval();
+			base.start();
 			
 			//Debugging info in console
 			//base.debug_info();
@@ -59,6 +59,7 @@
 				        marginTop: '0px'
 				    }, base.options.speed, function () {
 				        //Callback functions go here
+						base.$el.trigger("change");
 				    });
 				}, base.options.interval);
 			}else{
@@ -69,6 +70,7 @@
 		            	marginTop: '-' + base.options.row_height
 		            }, base.options.speed, function() {
 		                $(this).detach().css('marginTop', '0').appendTo(base.$el);
+						base.$el.trigger("change");
 		            });
 		            
 		    	}, base.options.interval);
@@ -112,7 +114,7 @@
 			//Stop Button
 			if (typeof(base.options.stop) != "undefined"  && base.options.stop != null){
 				$(base.options.stop).click(function(){
-					base.stop_interval();
+					base.stop();
 					return false;
 				});
 			}
@@ -120,7 +122,7 @@
 			//Start Button
 			if (typeof(base.options.start) != "undefined"  && base.options.start != null){
 				$(base.options.start).click(function(){
-					base.start_interval();
+					base.start();
 					return false;
 				});
 			}
@@ -146,9 +148,25 @@
 				base.$el.mouseenter(function(){
 					base.stop_interval();
 				}).mouseleave(function(){
-					base.start_interval();
+					if(base.options.isRunning) {
+						base.start_interval();
+					}
 				});
 			}
+			
+			// Stop on window blur
+			if(base.options.disableOnBlur) {
+				$(window).focus(function() {
+					if(base.options.isRunning) {
+						base.start_interval();
+					}
+				});
+				
+				$(window).blur(function() {
+					base.stop_interval();
+				});
+			}
+
 			
 			/*
 				TO DO List
@@ -184,10 +202,12 @@
 		}
 		
 		base.stop = function() {
+			base.options.isRunning = false;
 			base.stop_interval();
 		}
 		
 		base.start = function() {
+			base.options.isRunning = true;
 			base.start_interval();
 		}
 			
@@ -196,16 +216,20 @@
 			base.$el.find('li:first').animate({
 				marginTop: '0px'
 			}, base.options.speed, function () {
-				base.reset_interval();
+				if(base.options.isRunning) {
+					base.reset_interval();
+				}
 			});
 		}
-			
+		
 		base.next = function() {
 			base.$el.find('li:first').animate({
 				marginTop: '-' + base.options.row_height
 			}, base.options.speed, function() {
 				$(this).detach().css('marginTop', '0px').appendTo(base.$el);
-				base.reset_interval();
+				if(base.options.isRunning) {
+					base.reset_interval();
+				}
 			});
 		}
 			
@@ -225,7 +249,8 @@
 		max_items	: 	null, 		/* Integer for how many items to display at once. Resizes height accordingly (OPTIONAL) */
 	  	mousestop	:	false,		/* If set to true, the ticker will stop on mouseover */
 		direction	:	'down',		/* Direction that list will scroll */
-	  	mouse_scroll: 	true		/* Scroll the ticker with the mosue wheel if the jquery.mousewheel plugin is loaded. (http://brandonaaron.net/code/mousewheel/docs) */
+	  	mouse_scroll: 	true,		/* Scroll the ticker with the mosue wheel if the jquery.mousewheel plugin is loaded. */
+	  	disableOnBlur: 	false		/* Start and stop the ticker automaticaly when the window loses focus. */
   };
   
   $.fn.totemticker = function( options , args ){

@@ -1,4 +1,4 @@
-# Totem Ticker jQuery Plugin - v2.0
+# Totem Ticker jQuery Plugin - v2.1
 
 Totem is a jQuery plugin that turns lists into animated vertical tickers. It supports navigation and basic animation control.
 
@@ -29,6 +29,7 @@ The following options are available via the plugin array. Defaults are listed be
     mousestop	:	false,		/* If set to true, the ticker will stop while mouse is hovered over it */
     direction	:	'down'		/* Direction that list will scroll */
     mouse_scroll:       true            /* Scroll the ticker with the mosue wheel if the jquery.mousewheel plugin is loaded. (http://brandonaaron.net/code/mousewheel/docs) */
+    disableOnBlur: 	false		/* Start and stop the ticker automaticaly when the window loses focus. */
 
 
 The following functions are also supported.
@@ -43,7 +44,7 @@ The following functions are also supported.
 - http://twitter.com/zachdunn
 - zach@onemightyroar.com
 
-## Version 2 Updates
+## Version 2 Changes
 
 - Added support for mouse whee scrolling.
 - Tickers now all get the vTicker class for css markup.
@@ -54,6 +55,15 @@ The following functions are also supported.
         $(selector).totemticker("stop");
         $(selector).totemticker("previous");
         $(selector).totemticker("next");
+        
+ - Jeremy Pyne
+ - http://pynej.blogspot.com
+
+## Version 2.1 Changes
+
+- Now triggers a change event on element rotations.  You can now do this:
+        $(selector).totemticker().change(function() {console.log("I was rotated.");})
+- Added disableOnBlur option to pause the ticker when the browser window loses focus.
 
 - Jeremy Pyne
 - http://pynej.blogspot.com
