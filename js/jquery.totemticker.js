@@ -1,9 +1,11 @@
 /*
-	Totem Ticker Plugin
+	Totem Ticker Plugin v2.1
 	Copyright (c) 2011 Zach Dunn / www.buildinternet.com
 	Released under MIT License
 	--------------------------
 	Structure based on Doug Neiner's jQuery plugin blueprint: http://starter.pixelgraphics.us/
+	
+	Updates By: Jeremy Pyne http://pynej.blogspot.com
 */
 (function( $ ){
 	
@@ -34,8 +36,11 @@
 			//Setup navigation links (if specified)
 			base.setup_nav();
 			
+			//Setup mouse wheel scrolling.
+			base.setup_scroll();
+			
 			//Start the ticker
-			base.start_interval();
+			base.start();
 			
 			//Debugging info in console
 			//base.debug_info();
@@ -54,6 +59,7 @@
 				        marginTop: '0px'
 				    }, base.options.speed, function () {
 				        //Callback functions go here
+						base.$el.trigger("change");
 				    });
 				}, base.options.interval);
 			}else{
@@ -64,6 +70,7 @@
 		            	marginTop: '-' + base.options.row_height
 		            }, base.options.speed, function() {
 		                $(this).detach().css('marginTop', '0').appendTo(base.$el);
+						base.$el.trigger("change");
 		            });
 		            
 		    	}, base.options.interval);
@@ -80,8 +87,9 @@
 	    }
 	
 		base.format_ticker = function(){
-		
+			base.$el.addClass("vTicker");
 			if(typeof(base.options.max_items) != "undefined" && base.options.max_items != null) {
+				base.$el.find('li').outerHeight(base.options.row_height);
 				
 				//Remove units of measurement (Should expand to cover EM and % later)
 				var stripped_height = base.options.row_height.replace(/px/i, '');
@@ -106,7 +114,7 @@
 			//Stop Button
 			if (typeof(base.options.stop) != "undefined"  && base.options.stop != null){
 				$(base.options.stop).click(function(){
-					base.stop_interval();
+					base.stop();
 					return false;
 				});
 			}
@@ -114,7 +122,7 @@
 			//Start Button
 			if (typeof(base.options.start) != "undefined"  && base.options.start != null){
 				$(base.options.start).click(function(){
-					base.start_interval();
+					base.start();
 					return false;
 				});
 			}
@@ -122,12 +130,7 @@
 			//Previous Button
 			if (typeof(base.options.previous) != "undefined"  && base.options.previous != null){
 				$(base.options.previous).click(function(){
-					base.$el.find('li:last').detach().prependTo(base.$el).css('marginTop', '-' + base.options.row_height);
-					base.$el.find('li:first').animate({
-				        marginTop: '0px'
-				    }, base.options.speed, function () {
-				        base.reset_interval();
-				    });
+					base.previous();
 				    return false;
 				});
 			}
@@ -135,12 +138,7 @@
 			//Next Button
 			if (typeof(base.options.next) != "undefined" && base.options.next != null){
 				$(base.options.next).click(function(){
-					base.$el.find('li:first').animate({
-						marginTop: '-' + base.options.row_height
-			        }, base.options.speed, function() {
-			            $(this).detach().css('marginTop', '0px').appendTo(base.$el);
-			            base.reset_interval();
-			        });
+					base.next();
 			        return false;
 				});
 			}
@@ -150,16 +148,51 @@
 				base.$el.mouseenter(function(){
 					base.stop_interval();
 				}).mouseleave(function(){
-					base.start_interval();
+					if(base.options.isRunning) {
+						base.start_interval();
+					}
 				});
 			}
+			
+			// Stop on window blur
+			if(base.options.disableOnBlur) {
+				$(window).focus(function() {
+					if(base.options.isRunning) {
+						base.start_interval();
+					}
+				});
+				
+				$(window).blur(function() {
+					base.stop_interval();
+				});
+			}
+
 			
 			/*
 				TO DO List
 				----------------
 				Add a continuous scrolling mode
 			*/
+		}
 			
+		base.setup_scroll = function(){
+			if(typeof $.event.special.mousewheel != "undefined") {
+			base.$el.mousewheel(function() {
+				if(!base.options.scrolling && base.options.mouse_scroll) {
+					
+					base.options.scrolling = true;
+					setTimeout(function() {
+						base.options.scrolling = false;
+					}, base.options.speed);
+					
+					if(event.wheelDeltaY > 0 || event.wheelDelta > 0)
+						base.previous();
+					else
+						base.next();
+				}
+				return false;
+			});
+			}
 		}
 		
 		base.debug_info = function()
@@ -168,6 +201,38 @@
 			console.log(base.options);
 		}
 		
+		base.stop = function() {
+			base.options.isRunning = false;
+			base.stop_interval();
+		}
+		
+		base.start = function() {
+			base.options.isRunning = true;
+			base.start_interval();
+		}
+			
+		base.previous = function() {
+			base.$el.find('li:last').detach().prependTo(base.$el).css('marginTop', '-' + base.options.row_height);
+			base.$el.find('li:first').animate({
+				marginTop: '0px'
+			}, base.options.speed, function () {
+				if(base.options.isRunning) {
+					base.reset_interval();
+				}
+			});
+		}
+		
+		base.next = function() {
+			base.$el.find('li:first').animate({
+				marginTop: '-' + base.options.row_height
+			}, base.options.speed, function() {
+				$(this).detach().css('marginTop', '0px').appendTo(base.$el);
+				if(base.options.isRunning) {
+					base.reset_interval();
+				}
+			});
+		}
+			
 		//Make it go!
 		base.init();
   };
@@ -182,13 +247,20 @@
   		speed		:	800,		/* Speed of transition animation in milliseconds */
   		interval	:	4000,		/* Time between change in milliseconds */
 		max_items	: 	null, 		/* Integer for how many items to display at once. Resizes height accordingly (OPTIONAL) */
-		mousestop	:	false,		/* If set to true, the ticker will stop on mouseover */
-		direction	:	'down'		/* Direction that list will scroll */		
+	  	mousestop	:	false,		/* If set to true, the ticker will stop on mouseover */
+		direction	:	'down',		/* Direction that list will scroll */
+	  	mouse_scroll: 	true,		/* Scroll the ticker with the mosue wheel if the jquery.mousewheel plugin is loaded. */
+	  	disableOnBlur: 	false		/* Start and stop the ticker automaticaly when the window loses focus. */
   };
   
-  $.fn.totemticker = function( options ){
+  $.fn.totemticker = function( options , args ){
     return this.each(function(){
-    	(new $.omr.totemticker(this, options));
+			var instance = $.data(this, "omr.totemticker");
+			if (instance) {
+				instance[options].apply(instance, args);
+			} else {
+				instance = $.data(this, "omr.totemticker", new $.omr.totemticker(this, options));
+			}
   	});
   };
   
